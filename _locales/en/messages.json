@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "Micro Clock",
+    "description": ""
+  },
+  "extDesc": {
+    "message": "Display the digital time on the application icon, you can display two kinds of time, choose from hour, minute, second",
+    "description": ""
+  },
+  "title":{
+    "message": "The small clock displayed in the icon bar",
+    "description": ""
+  }
+}

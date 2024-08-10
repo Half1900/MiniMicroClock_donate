@@ -1,0 +1,19 @@
+{
+    "background": {
+        "page": "check.html"
+    },
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "index.html",
+        "default_title": "__MSG_title__"
+    },
+    "description": "__MSG_extDesc__",
+    "icons": {
+        "128": "icon.png",
+        "48": "icon.png"
+    },
+    "name": "__MSG_extName__",
+    "version": "2.26.2023.1750",
+    "manifest_version": 2,
+    "default_locale": "zh_CN"
+}

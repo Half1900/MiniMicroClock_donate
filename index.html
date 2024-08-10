@@ -1,0 +1,158 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" href="index.css"/>
+        <script src="jquery-3.3.1.min.js"></script>
+        <style>
+            body{
+                width:400px;
+                padding:10px 20px 20px 20px;
+                font-size: 17px;
+                font-family: 微软雅黑;
+                font-weight: bold;                
+            }
+            label{
+                vertical-align: 8px;
+                padding-left:5px;
+            }
+            div{
+                margin-top:0px;
+                line-height: 18px;
+            }
+            ul li{
+                display:inline-block;
+                width:100px;                
+                color: #02968A;
+            }
+            #option-color ul li{
+                width: 80px;
+            }
+            ul>li :hover{
+                color: #BA55D3;
+                cursor: pointer;
+            }
+            input ,label{
+                display: inline-block;
+            }
+            .bai-div{
+                display: inline-block;
+                vertical-align: -7px;
+            }
+            .bai-div :hover{
+                cursor: pointer;
+                color: #BA55D3;
+            }
+            legend{
+                color: #BA55D3;
+            }
+            #time,.show-bai{
+                color: #02968A;
+                font-size: 15px;
+                font-weight: bold;
+            }
+          
+            #time,input,label{
+                -webkit-user-select:none;
+            }
+            #options-setting div{
+                display: inline-block;
+                width: 155px;
+            }
+            .donate-div{
+                display: inline-block;
+                margin-right: 2px;
+            }
+            #time{
+                display: inline-block;
+                font-size: 18px;
+                font-weight: bold;
+                position: relative;
+                top: -2px;
+                left: -15px;
+            }
+            .donate-sp{
+                position: relative;
+                top: 10px;
+                left: -24px;
+                color: #02968A;
+            }
+            .legend-l span{
+                text-align: center;
+                font-size: 17px;
+                font-weight: bold;
+                position: relative;
+                top: -5px;
+            }
+            .embed-c{
+                position: relative;
+                top: 0px;
+            }
+            .embed-c:hover{
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+    <fieldset id="options-theme" style="margin-top:10px;" align="center">
+        <legend  class="legend-l"><span>点击</span> <embed class="embed-c" src="../img/icon.png" width="25" height="25"> <span>捐赠</span></legend>
+     <!--    <div class="donate-div"><embed class="embed-class" src="../img/money.png" ><span class="donate-span">捐赠</span></div> -->
+        <div id="time"></div>
+    </fieldset>    
+    <fieldset id="options-setting" style="margin-top:10px;"> 
+        <legend ><embed src="../img/setting.png" width="24" height="24"></legend>
+        <div class="show-bai"><div class="bai-div"><input type="checkbox" id="bai"/><label for="bai">黑色系主题勾选此项</label></div>
+        <div class="bai-div badge-div"><input type="checkbox" id="badge" checked="true"/><label for="badge" id="l-lbl">当前未显示徽章时间</label></div> 
+        </div>   
+        <div class="show-bai"><div class="bai-div"><input type="checkbox" id="badge-color"/><label for="badge-color" id="badge-label-color">未选择徽章颜色</label></div>
+        <div class="show-bai"><div class="bai-div"><input type="checkbox" id="timer-date"/><label for="timer-date" id="timer-label-color">未设置日期时间</label></div>
+        </div>
+    </fieldset>   
+    <fieldset id="option-color" style="margin-top:10px;display: none;">
+        <legend><embed src="../img/color.png" width="26" height="23"></legend>
+        <ul>
+            <li><input type="radio" class="group" id="default" name="color"  checked="true"/><label for="default">默认</label></li>
+            <li><input type="radio" class="group" id="green" name="color"/><label for="green">绿色</label></li>
+            <li><input type="radio" class="group" id="yellow" name="color"/><label for="yellow">橘黄</label></li>
+            <li><input type="radio" class="group" id="red" name="color"/><label for="red">红色</label></li>
+            <li><input type="radio" class="group" id="cyan" name="color" /><label for="cyan">蓝灰</label></li>
+            <li><input type="radio" class="group" id="purple" name="color" /><label for="purple">紫色</label></li>
+            <li><input type="radio" class="group" id="brown" name="color" /><label for="brown">棕色</label></li>
+            <li><input type="radio" class="group" id="pink" name="color" /><label for="pink">粉色</label></li>            
+        </ul>
+    </fieldset>
+       
+        <fieldset id="option-up" class="options" style="margin-top:20px;display: none;">
+            <legend><embed src="../img/start.png" width="23" height="23"></legend>
+            <ul>
+                <li><input type="radio" class="group" id="year1" name="time1"/><label for="year1">年</label></li>
+                <li><input type="radio" class="group" id="month1" name="time1"/><label for="month1">月</label></li>
+                <li><input type="radio" class="group" id="date1" name="time1"/><label for="date1">日</label></li>
+                <li><input type="radio" class="group" id="hour1" name="time1" /><label for="hour1">时</label></li>
+                <li><input type="radio" class="group" id="minute1" name="time1" /><label for="minute1">分</label></li>
+                <li><input type="radio" class="group" id="sec1" name="time1" checked="true"/><label for="sec1">秒</label></li>
+            </ul>
+        </fieldset>
+        <fieldset id="option-down" class="options" style="margin-top:20px;display: none;">
+            <legend><embed src="../img/end.png" width="23" height="23"></legend>
+            <ul>
+                <li><input type="radio" class="group" id="year" name="time2"/><label for="year">年</label></li>
+                <li><input type="radio" class="group" id="month" name="time2"/><label for="month">月</label></li>
+                <li><input type="radio" class="group" id="date" name="time2"/><label for="date">日</label></li>
+                <li><input type="radio" class="group" id="hour" name="time2"/><label for="hour">时</label></li>
+                <li><input type="radio" class="group" id="minute" name="time2" checked="true"/><label for="minute">分</label></li>
+                <li><input type="radio" class="group" id="sec" name="time2" /><label for="sec">秒</label></li>
+            </ul>
+      
+        </fieldset>
+    </body>
+</html>
+<script src=popup.js>
+    
+    
+</script>

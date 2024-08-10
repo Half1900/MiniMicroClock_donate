@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "Mini-MicroClock",
+    "description": ""
+  },
+  "extDesc": {
+    "message": "在应用图标上显示数字时间，可以从年、月、日、时、分、秒里面选两种时间显示",
+    "description": ""
+  },
+  "title":{
+    "message": "在图标栏显示的小小时钟",
+    "description": ""
+  }
+}
