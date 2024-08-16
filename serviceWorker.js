@@ -1,127 +1,210 @@
-    var ctx = $("#canvas")[0].getContext("2d")
+let canvas;
+let ctx;
+const img = new Array(10);
+const imgbai = new Array(10);
+let loadedImages = 0;
+let badgeInterval = null;
+function initCanvas() {
+    canvas = new OffscreenCanvas(19, 19);
+    ctx = canvas.getContext('2d', { willReadFrequently: true });
+}
+
+const fillZero = (num, length) => num.toString().padStart(length, '0');
+
+async function drawTime(time) {
+    const bai = await getStorageItem('bai') === 1;
+    ctx.clearRect(0, 0, 19, 19);
+    time.forEach((digit, index) => {
+        const x = index % 2 * 10;
+        const y = Math.floor(index / 2) * 10;
+        ctx.drawImage(bai ? imgbai[digit] : img[digit], x, y, 9, 9);
+    });
     
-    var fillZero = function(num, length) {
-        num = num.toString();
-        var str = "";
-        for (var i = 0, n = length - num.length; i < n; i++) {
-            str += "0";
-        }
-        return str + num;
-    }
+    const imageData = ctx.getImageData(0, 0, 19, 19);
+    chrome.action.setIcon({ imageData: imageData });
+}
 
-    function run() {
-        /**
-         * @param {string} time 形式为 1.1.2.9的数组
-         */
-        var drawTime = function(time) {
-            var bai = localStorage['bai'];
-            var a = time[0],
-                b = time[1],
-                c = time[2],
-                d = time[3];
-            ctx.clearRect(0, 0, 19, 19);
-            ctx.drawImage(bai == 1 ? imgbai[a] : img[a], 0, 0, 9, 9);
-            ctx.drawImage(bai == 1 ? imgbai[b] : img[b], 10, 0, 9, 9);
-            ctx.drawImage(bai == 1 ? imgbai[c] : img[c], 0, 10, 9, 9);
-            ctx.drawImage(bai == 1 ? imgbai[d] : img[d], 10, 10, 9, 9);
-            chrome.browserAction.setIcon({
-                path: $("canvas")[0].toDataURL()
-            })
-        }
-        drawTime([1, 2, 3, 4])
-        setInterval(function() {
-            var arr_2 = [
-                localStorage["time1"] || "sec",
-                localStorage["time2"] || "minute"
-            ]
-            var time = new Date();
-            var data = {
-                hour: fillZero(time.getHours(), 2),
-                minute: fillZero(time.getMinutes(), 2),
-                sec: fillZero(time.getSeconds(), 2),
-                month: fillZero(time.getMonth() + 1, 2),
-                date: fillZero(time.getDate(), 2),
-                year: fillZero(time.getFullYear(), 4).substr(2, 4)
+async function updateTime() {
+    const [time1 = 'sec', time2 = 'minute'] = await Promise.all([
+        getStorageItem('time1'),
+        getStorageItem('time2')
+    ]);
+    
+    const arr_2 = [time1, time2];
+    const time = new Date();
+    const data = {
+        hour: time.getHours(),
+        minute: time.getMinutes(),
+        sec: time.getSeconds(),
+        month: time.getMonth() + 1,
+        date: time.getDate(),
+        year: time.getFullYear() % 100
+    };
+    const timeString = fillZero(data[time1], 2) + fillZero(data[time2], 2);
+    await drawTime(timeString.split('').map(Number));
+}
+
+function checkLoad() {
+    loadedImages++;
+    if (loadedImages === 20) {
+        //setInterval(updateTime, 1000);
+        chrome.alarms.create('updateTime', { periodInMinutes: 1/600 });
+        chrome.alarms.onAlarm.addListener((alarm) => {
+            if (alarm.name === 'updateTime') {
+              updateTime();
             }
-            var data1 = data[arr_2[0]],
-                data2 = data[arr_2[1]];
-            drawTime([data1.charAt(0), data1.charAt(1), data2.charAt(0), data2.charAt(1)]);
-            startBadgeTimer();
-        }, 100)
-    }
-    var checkLoad = function() {
-        count--;
-        if (count == 0) {
-            run();
-        }
-    }
-    var img = new Array(10),
-        count = 20;
-    var imgcount = 0;
-    for (var i = 0; i < 10; i++) {
-        img[i] = new Image();
-        img[i].src = "img/" + i + ".png"
-        img[i].onload = checkLoad;
-    }
-    var imgbai = new Array(10)
-    var imgcountbai = 0;
-    for (var i = 0; i < 10; i++) {
-        imgbai[i] = new Image();
-        imgbai[i].src = "img/" + i + "-w.png"
-        imgbai[i].onload = checkLoad;
-    }
-
-    function startBadgeTimer() {
-        var a = new Date;
-        var b = a.getHours();
-        var c = a.getMinutes();
-        b < 10 ? b = "0" + b : b = "" + b;
-        c < 10 ? c = "0" + c : c = "" + c;
-        var t = b + "" + c;
-        chrome.browserAction.setBadgeText({
-            text: localStorage['badge'] == 1 ? t : ""
         });
-        chrome.browserAction.setBadgeBackgroundColor({
-            color: getColor(localStorage["color"]!= undefined ? localStorage["color"] :"default")
-        });            
-
-
+          
     }
+}
 
-    function getColor(arg) {
-        var color1;
-        switch (arg) {
-            case "default":
-                color1 = "#0091ea";
-                break;
+async function loadImage(url) {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return createImageBitmap(blob);
+}
 
-            case "green":
-                color1 = "green";
-                break;
-
-            case "yellow":
-                color1 = "#ff8c00";
-                break;
-
-            case "red":
-                color1 = "#f00";
-                break;
-
-            case "cyan":
-                color1 = "#607d8b";
-                break;
-
-            case "purple":
-                color1 = "#BB33FF";
-                break;
-
-            case "brown":
-                color1 = "#996633";
-                break;
-
-            case "pink":
-                color1 = "#FA7296";
-                break;
+async function loadImages() {
+    const suffixes = ['', '-w'];
+    for (const suffix of suffixes) {
+        const imgArray = suffix === '' ? img : imgbai;
+        for (let i = 0; i < 10; i++) {
+            const url = chrome.runtime.getURL(`img/${i}${suffix}.png`);
+            imgArray[i] = await loadImage(url);
+            checkLoad();
         }
-        return color1;
+        
+        
     }
+    
+}
+
+function getStorageItem(key) {
+    return new Promise((resolve) => {
+        chrome.storage.local.get(key, (result) => {
+            resolve(result[key]);
+        });
+    });
+}
+
+function setStorageItem(key, value) {
+    return new Promise((resolve) => {
+        chrome.storage.local.set({[key]: value}, resolve);
+    });
+}
+
+initCanvas();
+loadImages();
+
+chrome.runtime.onMessage.addListener((request) => {
+    if (request.action === "updateTime") {
+        updateTime();
+    }
+    if (request.action === "storageUpdated") {
+        // 存储已更新，执行相应操作
+        handleStorageUpdate(request.key, request.value);
+    }
+});
+let color;
+async function handleStorageUpdate(key, value) {
+
+    switch(key) {
+        case 'badge':
+            value === 1 ? startBadgeUpdate() : stopBadgeUpdate();
+            break;
+        case 'bai':
+            updateTime();
+            break;
+        case 'color':
+            color = getColor((await getStorageItem("color")).toString());
+            chrome.action.setBadgeBackgroundColor({ color: color });
+            console.log(color)
+        break;
+
+    }
+}
+async function updateBadgeTime() {
+    const now = new Date();
+    now.setSeconds(0);
+    const timeString = `${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+    chrome.action.setBadgeText({ text: timeString });
+    color = getColor((await getStorageItem("color")).toString());   
+    chrome.action.setBadgeBackgroundColor({ color: color });
+}
+
+async function startBadgeUpdate() {
+    if (!badgeInterval) {
+        badgeInterval = setInterval(updateBadgeTime, 500); // 每分钟更新一次
+    } 
+
+}
+
+function stopBadgeUpdate() {
+    if (badgeInterval) {
+        clearInterval(badgeInterval);
+        badgeInterval = null;
+    } 
+    chrome.action.setBadgeText({ text: '' });
+}
+
+// 在插件启动或刷新时检查 badge 状态
+async function checkBadgeStatus() {
+    const isBadgeChecked = await getStorageItem("badge")  === 1;
+    if (isBadgeChecked) {
+        startBadgeUpdate();
+    } else {
+        stopBadgeUpdate();
+    }
+}
+
+checkBadgeStatus();
+
+// 监听存储变化
+chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === 'local' && changes.badge) {
+        const newValue = changes.badge.newValue;
+        if (newValue === 1) {
+            startBadgeUpdate();
+        } else {
+            stopBadgeUpdate();
+        }
+    }
+});
+
+function getColor(arg) {
+    let color1;
+    switch (arg) {
+        case "default":
+            color1 = "#0091ea";
+            break;
+
+        case "green":
+            color1 = "green";
+            break;
+
+        case "yellow":
+            color1 = "#ff8c00";
+            break;
+
+        case "red":
+            color1 = "#f00";
+            break;
+
+        case "cyan":
+            color1 = "#607d8b";
+            break;
+
+        case "purple":
+            color1 = "#BB33FF";
+            break;
+
+        case "brown":
+            color1 = "#996633";
+            break;
+
+        case "pink":
+            color1 = "#FA7296";
+            break;
+    }
+    return color1;
+}

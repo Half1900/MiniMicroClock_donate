@@ -1,19 +1,25 @@
 {
+    "name": "__MSG_extName__",
+    "description": "__MSG_extDesc__",
+    "version": "8.16.2024.2231",
+    "manifest_version": 3,
+    "default_locale": "zh_CN",
     "background": {
-        "page": "check.html"
+        "service_worker": "serviceWorker.js",
+        "type": "module"
     },
-    "browser_action": {
+    "action": {
         "default_icon": "icon.png",
         "default_popup": "index.html",
         "default_title": "__MSG_title__"
     },
-    "description": "__MSG_extDesc__",
     "icons": {
         "128": "icon.png",
         "48": "icon.png"
     },
-    "name": "__MSG_extName__",
-    "version": "2.26.2023.1750",
-    "manifest_version": 2,
-    "default_locale": "zh_CN"
+    "permissions": ["storage","alarms"],
+    "web_accessible_resources": [{
+    "resources": ["img/*.png"],
+    "matches": ["<all_urls>"]
+  }]
 }
