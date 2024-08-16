@@ -118,7 +118,6 @@ async function handleStorageUpdate(key, value) {
         case 'color':
             color = getColor((await getStorageItem("color")).toString());
             chrome.action.setBadgeBackgroundColor({ color: color });
-            console.log(color)
         break;
 
     }
